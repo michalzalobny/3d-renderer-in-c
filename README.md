@@ -20,6 +20,12 @@ Based on Gustavo Pezzi's course
 
 # Run commands
 
+- **Using Makefile**
+
+  - `make build` or just `make` (it will pick first command)
+  - `make run`
+  - `make clean`
+
 - **Compiling the program**
 
   - `gcc main.c -o output`
