@@ -30,13 +30,19 @@ Based on Gustavo Pezzi's course
 # Linux Installation
 
 - **Build Tools**
+
   - **Command:** `sudo apt install build-essential`
+
 - **SDL2**
+
   - **Command:** `sudo apt install libsd12-dev`
 
 # Mac Installation
 
 - **Xcode Command Line Tools**
+
   - **Command**: `xcode-select --install`.
+
 - **SDL2 Library**
+
   - **Command via Homebrew**: If Homebrew is not installed, first install it from [brew.sh](https://brew.sh/). Then, `brew install sdl2` in the Terminal.
