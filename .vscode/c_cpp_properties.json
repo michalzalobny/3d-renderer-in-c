@@ -1,0 +1,9 @@
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "includePath": ["/opt/homebrew/include"]
+    }
+  ],
+  "version": 4
+}
