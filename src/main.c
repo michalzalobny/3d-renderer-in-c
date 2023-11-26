@@ -20,6 +20,14 @@ bool initialize_window(void) {
     return false;
   }
 
+  // Get window width and height
+  SDL_DisplayMode display_mode;
+  SDL_GetCurrentDisplayMode(0, &display_mode);
+
+  // Makes sure that I use all available pixels in the real full screen mode set later
+  window_width = display_mode.w;
+  window_height = display_mode.h;
+
   // Create SDL window
   window = SDL_CreateWindow(
     NULL, // Window title
@@ -42,6 +50,8 @@ bool initialize_window(void) {
     fprintf(stderr, "Error creating SDL renderer.\n");
     return false;
   }
+
+  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
   return true;
 }
