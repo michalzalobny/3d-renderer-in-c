@@ -120,17 +120,27 @@ void draw_grid(uint32_t color, int gap_size){
   }
 }
 
+void draw_rect(int startX, int startY, int width, int height, uint32_t color){
+   for(int y = 0; y < window_height; y++){
+    for(int x = 0; x < window_width; x++){
+      if(x>= startX && y>= startY && x<= (width + startX) && y<= (height + startY)){
+        color_buffer[window_width * y + x] = color;
+      }
+ 
+    }
+  }
+}
+
 void render(void){
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
   SDL_RenderClear(renderer);
 
   draw_grid(0xFFFF0000, 30);
+  draw_rect(100, 200, 400, 90, 0xFF0000FF);
 
   render_color_buffer();
 
   clear_color_buffer(0xFFFFFF00);
-
-
 
   SDL_RenderPresent(renderer);
 }
