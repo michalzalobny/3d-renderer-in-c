@@ -13,7 +13,7 @@ extern SDL_Texture *color_buffer_texture;
 extern int window_width;
 extern int window_height;
 
-// Function prototypes/signatures/declarations
+// Function prototypes/signatures/declarations. (Definition/implementation is in .c file)
 bool initialize_window(void);
 void draw_grid(uint32_t color, int gap_size);
 void draw_rect(int startX, int startY, int width, int height, uint32_t color);
