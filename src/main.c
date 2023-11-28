@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "display.h"
+#include "vector.h"
 
 bool is_running = false;
 
@@ -55,6 +56,8 @@ void render(void){
 
 int main (void) {
   is_running = initialize_window();
+
+  vec3_t my_vec = {1.0, 0.0, 0.0};
 
   setup();
 
