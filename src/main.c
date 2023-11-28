@@ -42,8 +42,9 @@ void render(void){
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
   SDL_RenderClear(renderer);
 
-  draw_grid(0xFFFF0000, 30);
-  draw_rect(100, 200, 400, 90, 0xFF0000FF);
+  // draw_grid(0xFFFF0000, 30);
+  // draw_rect(100, 200, 400, 90, 0xFF0000FF);
+  draw_pixel(100, 200, 0xFFFF0000);
 
   render_color_buffer();
 
