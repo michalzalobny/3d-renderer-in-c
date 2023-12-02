@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include <math.h>
 
 #include "display.h"
 #include "vector.h"
@@ -11,7 +12,9 @@
 vec3_t cube_points[N_POINTS]; // 9x9x9 cube
 vec2_t projected_points[N_POINTS];
 
-float fov_factor = 128;
+vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
+
+float fov_factor = 640;
 
 bool is_running = false;
 
@@ -60,10 +63,27 @@ void process_input(void){
 
 // Convert 3D point to 2D
 vec2_t project(vec3_t point){
+
+  float w = 1;
+
+  float x_2 = point.x / point.z * w;
+
+  float rb = sqrt(pow(x_2, 2.0) + pow(w, 2.0));
+  float cb = (rb * point.z) / w;
+
+  float y_2 = (point.y * rb) / cb;
+
   vec2_t projected_point = {
-    .x = fov_factor * (point.x) / point.z,
-    .y = fov_factor * (point.y) / point.z
+    .x = fov_factor * (x_2),
+    .y = fov_factor * (y_2)
   };
+
+  // Old solution (simplified one, works if w = 1)
+  // vec2_t projected_point = {
+  //   .x = fov_factor * (point.x) / point.z,
+  //   .y = fov_factor * (point.y) / point.z
+  // };
+
   return projected_point;
 }
 
@@ -71,16 +91,20 @@ void update(void){
   for(int i = 0; i < N_POINTS; i++){
     vec3_t point = cube_points[i];
 
+    // Move the point away from the camera
+    point.z -= camera_position.z;
+
     //Project the current point
     vec2_t projected_point = project(point);
 
     //Save projected 2D vec to array of projected points
     projected_points[i] = projected_point;
   }
+
 }
 
 void render(void){
-  draw_grid(0xFF0000FF, 15);
+  // draw_grid(0xFF0000FF, 15);
 
   // Loop all projected points and render them
   for (int i = 0; i< N_POINTS; i++){
