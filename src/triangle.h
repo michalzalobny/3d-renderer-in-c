@@ -2,6 +2,7 @@
 #define TRIANGLE_H
 
 #include "vector.h"
+#include "display.h"
 
 typedef struct {
   int a;
