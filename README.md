@@ -20,6 +20,10 @@ Based on Gustavo Pezzi's course
 
 # Run commands
 
+- **Using custom script**
+
+  - `./build-and-run.sh`
+
 - **Using Makefile**
 
   - `make build` or just `make` (it will pick first command)

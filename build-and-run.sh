@@ -1,4 +1,4 @@
 make build
 make run
 
-# Make sure the file can be executed by running: chmod +x name-of-file.sh
+# If can't run, try to change the permission of the file: chmod +x name-of-file.sh
