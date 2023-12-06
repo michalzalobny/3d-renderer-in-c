@@ -6,7 +6,7 @@
 
 
 int main (void) {
-  printf("READY!");
+  printf("READY!\n");
 
   return 0;
 }
