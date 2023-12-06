@@ -9,16 +9,16 @@ int main (void) {
   printf("Size of int: %lu\n", sizeof(int)); // %lu = unsigned long int
   printf("Size of int*: %lu\n", sizeof(int*));
 
-  int my_arr[5] = {9,2,7,1,4};
-  int* arr_pointer = my_arr;
+  char my_arr[5] = {'c','d','v','g','k'};
+  char* arr_pointer = my_arr;
 
   printf("Arr pointer: %p\n", arr_pointer);
-  printf("Value of arr pointer: %d\n", *arr_pointer);
+  printf("Value of arr pointer: %c\n", *arr_pointer);
 
-  int* arr_pointer_incremented = arr_pointer + 1;
+  char* arr_pointer_incremented = (char*)arr_pointer + 2;
   printf("Arr pointer incremented: %p\n", arr_pointer_incremented);
-  printf("Value of arr pointer incremented: %d\n", *arr_pointer_incremented);
-  
+  printf("Value of arr pointer incremented: %c\n", *arr_pointer_incremented);
+
   printf("--------------------------------------------------\n");
   return 0;
 }
