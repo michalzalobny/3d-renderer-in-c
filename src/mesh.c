@@ -46,83 +46,79 @@ face_t cube_faces[N_CUBE_FACES] = {
   { .a = 6, .b = 1, .c = 4 }
 };
 
-
-void load_cube_mesh_data(void){
-  for (int i = 0; i < N_CUBE_VERTICES; i++){
-    vec3_t cube_vertex = cube_vertices[i];
-    array_push(mesh.vertices, cube_vertex);
-  }
-
-  for (int i = 0; i < N_CUBE_FACES; i++){
-    face_t cube_face = cube_faces[i];
-    array_push(mesh.faces, cube_face);
-  }
-}
-
-#define MAX_LEN 256
-
-void load_obj_file_data(char* filename){
-  FILE* fp;
+void load_obj_file_data(char * filename) {
+  FILE * fp;
   fp = fopen(filename, "r");
   if (fp == NULL) perror("Failed: ");
-  
+
+  # define MAX_LEN 256
   char buffer[MAX_LEN]; // Max line length
 
-  while (fgets(buffer, MAX_LEN, fp)){
+  while (fgets(buffer, MAX_LEN, fp)) {
     // Check if line starts with "v " (vector) or "f " (face)
     int is_vector_line = strncmp(buffer, "v ", 2);
     int is_face_line = strncmp(buffer, "f ", 2);
 
-  if(is_vector_line == 0){
-    char* saveptr;  // For maintaining context in strtok_r
-    char* token = strtok_r(buffer, " ", &saveptr);
-    if (token == NULL) perror("Failed: ");
+    if (is_vector_line == 0) {
+      char * saveptr; // For maintaining context in strtok_r
+      char * token = strtok_r(buffer, " ", & saveptr);
+      if (token == NULL) perror("Failed: ");
 
-    // Parse the vertex line; atof converts string to float
-    vec3_t vertex;
-    vertex.x = atof(strtok_r(NULL, " ", &saveptr));
-    vertex.y = atof(strtok_r(NULL, " ", &saveptr));
-    vertex.z = atof(strtok_r(NULL, " ", &saveptr));
-        
-    array_push(mesh.vertices, vertex);
-    // printf("Vertex: (%f, %f, %f)\n", vertex.x, vertex.y, vertex.z);
-}
+      // Parse the vertex line; atof converts string to float
+      vec3_t vertex;
+      vertex.x = atof(strtok_r(NULL, " ", & saveptr));
+      vertex.y = atof(strtok_r(NULL, " ", & saveptr));
+      vertex.z = atof(strtok_r(NULL, " ", & saveptr));
 
+      array_push(mesh.vertices, vertex);
 
+      // OR:
 
-  if(is_face_line == 0) { 
-    char* saveptr_1;  // For maintaining context in strtok_r for buffer
-    char* saveptr_2;  // For maintaining context in strtok_r for face meta data
-    char* token = strtok_r(buffer, " ", &saveptr_1);
+      // vec3_t vertex;
+      // sscanf(buffer, "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
+      // array_push(mesh.vertices, vertex);
+    }
 
-    if (token == NULL) perror("Failed: ");
+    if (is_face_line == 0) {
+      char * saveptr_1; // For maintaining context in strtok_r for buffer
+      char * saveptr_2; // For maintaining context in strtok_r for face meta data
+      char * token = strtok_r(buffer, " ", & saveptr_1); // "f"
 
-    // Parse the face line
-    char* face_1_meta_data = strtok_r(NULL, " ", &saveptr_1);
-    char* face_2_meta_data = strtok_r(NULL, " ", &saveptr_1);
-    char* face_3_meta_data = strtok_r(NULL, " ", &saveptr_1);
+      if (token == NULL) perror("Failed: ");
 
-    if (!face_1_meta_data || !face_2_meta_data || !face_3_meta_data) {
+      // Parse the face line
+      char * face_1_meta_data = strtok_r(NULL, " ", & saveptr_1); // "1/1/1"
+      char * face_2_meta_data = strtok_r(NULL, " ", & saveptr_1); // "2/1/1"
+      char * face_3_meta_data = strtok_r(NULL, " ", & saveptr_1); // "3/3/2"
+
+      if (!face_1_meta_data || !face_2_meta_data || !face_3_meta_data) {
         perror("Failed to parse face meta data");
-    }
+      }
 
-    char* face_1 = strtok_r(face_1_meta_data, "/", &saveptr_2);
-    char* face_2 = strtok_r(face_2_meta_data, "/", &saveptr_2);
-    char* face_3 = strtok_r(face_3_meta_data, "/", &saveptr_2);
+      // Parse the face meta data
+      char * face_1 = strtok_r(face_1_meta_data, "/", & saveptr_2); // "1"
+      char * face_2 = strtok_r(face_2_meta_data, "/", & saveptr_2); // "2"
+      char * face_3 = strtok_r(face_3_meta_data, "/", & saveptr_2); // "3"
 
-    if (!face_1 || !face_2 || !face_3) {
+      if (!face_1 || !face_2 || !face_3) {
         perror("Failed to parse face number data");
+      }
+
+      face_t face = {
+        .a = atoi(face_1),
+        .b = atoi(face_2),
+        .c = atoi(face_3)
+      };
+
+      array_push(mesh.faces, face);
+
+      // OR:
+
+      // face_t face;
+      // sscanf(buffer, "f %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d", &face.a, &face.b, &face.c);
+      // array_push(mesh.faces, face);
+
     }
-
-    face_t face = {
-        .a = atoi(face_1) - 1, // -1 because obj files start counting from 1
-        .b = atoi(face_2) - 1,
-        .c = atoi(face_3) - 1
-    };
-
-    array_push(mesh.faces, face);
-    // printf("Face: (%d, %d, %d)\n", face.a, face.b, face.c);
-}
 
   }
   fclose(fp);
