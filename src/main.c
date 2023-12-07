@@ -87,8 +87,10 @@ void update(void) {
   }
   previous_frame_time = SDL_GetTicks();
 
-  // Initialize the array of triangles to render
+  // Clear the array of triangles to render each frame
+  array_free(triangles_to_render);
   triangles_to_render = NULL;
+
 
   // Rotate the cube
   mesh.rotation.x += 0.01;
@@ -129,7 +131,6 @@ void update(void) {
     }
 
     // Save the projected triangle in the array of triangles to render
-    // triangles_to_render[i] = projected_triangle;
     array_push(triangles_to_render, projected_triangle);
   }
 }
@@ -138,7 +139,6 @@ void render(void){
   // draw_grid(0xFF0000FF, 15);
 
   // Loop all projected triangles and render them
-
   int num_triangles = array_length(triangles_to_render);
 
   for (int i = 0; i< num_triangles; i++){
@@ -158,9 +158,6 @@ void render(void){
     );
   }
 
-  // Clear the array of triangles to render each frame
-  array_free(triangles_to_render);
-
   render_color_buffer();
   clear_color_buffer(0xFF000000);
   SDL_RenderPresent(renderer);
@@ -177,7 +174,10 @@ void free_resources(void){
 int main (void) {
   is_running = initialize_window();
 
+
   setup();
+
+ 
 
   while (is_running){
     process_input();
@@ -186,7 +186,6 @@ int main (void) {
   }
 
   destroy_window();
-
   free_resources();
 
   return 0;
