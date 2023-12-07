@@ -48,10 +48,6 @@ face_t cube_faces[N_CUBE_FACES] = {
 
 
 void load_cube_mesh_data(void){
-  //Free the mesh vertices and faces if they are not NULL
-  if(mesh.vertices != NULL) free(mesh.vertices);
-  if(mesh.faces != NULL) free(mesh.faces);
-
   for (int i = 0; i < N_CUBE_VERTICES; i++){
     vec3_t cube_vertex = cube_vertices[i];
     array_push(mesh.vertices, cube_vertex);
@@ -66,13 +62,6 @@ void load_cube_mesh_data(void){
 #define MAX_LEN 256
 
 void load_obj_file_data(char* filename){
-  // Read the contents of the .obj file
-  // and load the vertices and faces in 
-  // out mesh.vertices and mesh.faces
-
-  if(mesh.vertices != NULL) free(mesh.vertices);
-  if(mesh.faces != NULL) free(mesh.faces);
-
   FILE* fp;
   fp = fopen(filename, "r");
   if (fp == NULL) perror("Failed: ");
@@ -80,51 +69,61 @@ void load_obj_file_data(char* filename){
   char buffer[MAX_LEN]; // Max line length
 
   while (fgets(buffer, MAX_LEN, fp)){
-    // Find line that starts with "v " (vector) or "f " (face)
+    // Check if line starts with "v " (vector) or "f " (face)
     int is_vector_line = strncmp(buffer, "v ", 2);
     int is_face_line = strncmp(buffer, "f ", 2);
 
-    if(is_vector_line == 0){
-      char* first_token = strtok(buffer, " ");  // Start tokenizing the line by space
+  if(is_vector_line == 0){
+    char* saveptr;  // For maintaining context in strtok_r
+    char* token = strtok_r(buffer, " ", &saveptr);
+    if (token == NULL) perror("Failed: ");
 
-      // Parse the vertex line; atof converts string to float and strtok with NULL continues to next token
-      vec3_t vertex = {
-        .x = atof(strtok(NULL, " ")),
-        .y = atof(strtok(NULL, " ")),
-        .z = atof(strtok(NULL, " "))
-      };
+    // Parse the vertex line; atof converts string to float
+    vec3_t vertex;
+    vertex.x = atof(strtok_r(NULL, " ", &saveptr));
+    vertex.y = atof(strtok_r(NULL, " ", &saveptr));
+    vertex.z = atof(strtok_r(NULL, " ", &saveptr));
+        
+    array_push(mesh.vertices, vertex);
+    // printf("Vertex: (%f, %f, %f)\n", vertex.x, vertex.y, vertex.z);
+}
 
-      // Push the vertex to the model_vertices array
-      array_push(mesh.vertices, vertex);
-      //Print vertex
-      printf("Vertex: (%f, %f, %f)\n", vertex.x, vertex.y, vertex.z);
+
+
+  if(is_face_line == 0) { 
+    char* saveptr_1;  // For maintaining context in strtok_r for buffer
+    char* saveptr_2;  // For maintaining context in strtok_r for face meta data
+    char* token = strtok_r(buffer, " ", &saveptr_1);
+
+    if (token == NULL) perror("Failed: ");
+
+    // Parse the face line
+    char* face_1_meta_data = strtok_r(NULL, " ", &saveptr_1);
+    char* face_2_meta_data = strtok_r(NULL, " ", &saveptr_1);
+    char* face_3_meta_data = strtok_r(NULL, " ", &saveptr_1);
+
+    if (!face_1_meta_data || !face_2_meta_data || !face_3_meta_data) {
+        perror("Failed to parse face meta data");
     }
 
-    if(is_face_line == 0) { 
-      char* first_token = strtok(buffer, " ");  // Start tokenizing the line by space
-      // Parse the face line
-      char* face_1_meta_data = strtok(NULL, " ");
-      char* face_2_meta_data = strtok(NULL, " ");
-      char* face_3_meta_data = strtok(NULL, " ");
+    char* face_1 = strtok_r(face_1_meta_data, "/", &saveptr_2);
+    char* face_2 = strtok_r(face_2_meta_data, "/", &saveptr_2);
+    char* face_3 = strtok_r(face_3_meta_data, "/", &saveptr_2);
 
-      char* face_1 = strtok(face_1_meta_data, "/");
-      char* face_2 = strtok(face_2_meta_data, "/");
-      char* face_3 = strtok(face_3_meta_data, "/");
+    if (!face_1 || !face_2 || !face_3) {
+        perror("Failed to parse face number data");
+    }
 
-      face_t face = {
+    face_t face = {
         .a = atoi(face_1) - 1, // -1 because obj files start counting from 1
         .b = atoi(face_2) - 1,
         .c = atoi(face_3) - 1
-      };
+    };
 
-      // Push the face to the mesh.faces array
-      array_push(mesh.faces, face);
-      // Print face
-      printf("Face: (%d, %d, %d)\n", face.a, face.b, face.c);
-    }
+    array_push(mesh.faces, face);
+    // printf("Face: (%d, %d, %d)\n", face.a, face.b, face.c);
+}
 
- 
   }
-  
   fclose(fp);
 }
