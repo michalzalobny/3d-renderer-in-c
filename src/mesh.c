@@ -1,6 +1,10 @@
 #include "mesh.h"
 #include "array.h"
 
+#include <stdio.h>
+#include <string.h>
+
+
 mesh_t mesh = {
   .vertices = NULL,
   .faces = NULL,
@@ -50,4 +54,30 @@ void load_cube_mesh_data(void){
     face_t cube_face = cube_faces[i];
     array_push(mesh.faces, cube_face);
   }
+}
+
+#define MAX_LEN 256
+
+void load_obj_file_data(char* filename){
+  // Read the contents of the .obj file
+  // and load the vertices and faces in 
+  // out mesh.vertices and mesh.faces
+
+  FILE* fp;
+  fp = fopen(filename, "r");
+  if (fp == NULL) {
+    perror("Failed: ");
+  }
+
+  char buffer[MAX_LEN];
+  while (fgets(buffer, MAX_LEN, fp)){
+  
+    char* tokens = strtok(buffer, " ");
+
+    if(tokens[0] == 'v'){
+      printf("%s\n", buffer);
+    }
+  }
+  fclose(fp);
+ 
 }
