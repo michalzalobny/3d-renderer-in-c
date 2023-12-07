@@ -33,6 +33,7 @@ void setup(void){
     window_height
   );
 
+  // Load the cube values in the mesh data structure
   load_cube_mesh_data();
 }
 
