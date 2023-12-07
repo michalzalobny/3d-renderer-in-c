@@ -1,8 +1,11 @@
 #include "mesh.h"
 #include "array.h"
+#include "helpers.h"
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
+
 
 
 mesh_t mesh = {
@@ -71,12 +74,16 @@ void load_obj_file_data(char* filename){
 
   char buffer[MAX_LEN];
   while (fgets(buffer, MAX_LEN, fp)){
-  
-    char* tokens = strtok(buffer, " ");
+    // char* tokens = strtok(buffer, " ");
+    bool is_vector_line = strncmp(buffer, "v ", 2) == 0;
+    bool is_face_line = strncmp(buffer, "f ", 2) == 0;
 
-    if(tokens[0] == 'v'){
-      printf("%s\n", buffer);
+
+
+    if(is_vector_line){
+      print_string(buffer);
     }
+
   }
   fclose(fp);
  
