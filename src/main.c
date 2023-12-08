@@ -8,6 +8,7 @@
 #include "vector.h"
 #include "mesh.h"
 #include "array.h"
+#include "helpers.h"
 
 // Array of triangles that should be rendere frame by frame
 triangle_t* triangles_to_render = NULL;
