@@ -169,6 +169,9 @@ void update(void) {
 void render(void){
   // draw_grid(0xFF0000FF, 15);
 
+  // Fill background with gray color
+  clear_color_buffer(0xFF151515);
+
   // Loop all projected triangles and render them
   int num_triangles = array_length(triangles_to_render);
 
