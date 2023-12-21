@@ -4,7 +4,7 @@ Building a 3D graphics renderer from scratch using the C programming language.
 
 No GPU, or OpenGL. Just a C compiler and linear algebra.
 
-In this project, I'm using the Left-Handed coordinate system.
+In this project, I'm using the Left-Handed coordinate system. Z-values increase when going into the screen.
 
 ## Content
 

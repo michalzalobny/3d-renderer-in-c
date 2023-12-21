@@ -36,7 +36,7 @@ void setup(void){
 
   // Load the cube values in the mesh data structure
   // load_cube_mesh_data();
-  load_obj_file_data("./assets/f22.obj");
+  load_obj_file_data("./assets/cube.obj");
 }
 
 void process_input(void){
@@ -121,7 +121,6 @@ void update(void) {
             // Translate the vertices away from the camera
             transformed_vertex.z += 5;
 
-            // Save transformed vertex in the array of transformed vertices
             transformed_vertices[j] = transformed_vertex;
         }
 
@@ -140,13 +139,12 @@ void update(void) {
         vec3_t normal = vec3_cross(vector_ab, vector_ac);
         vec3_normalize(&normal);
 
-        // Find the vector between vertex A in the triangle and the camera origin
         vec3_t camera_ray = vec3_sub(camera_position, vector_a);
 
-        // Calculate how aligned the camera ray is with the face normal (using dot product)
+        // How aligned the camera ray is with the face normal
         float dot_normal_camera = vec3_dot(normal, camera_ray);
 
-        // Bypass the triangles that are looking away from the camera
+        // Don't render if not facing camera
         if (dot_normal_camera < 0) {
             continue;
         }
@@ -155,17 +153,15 @@ void update(void) {
 
         // Loop all three vertices to perform projection
         for (int j = 0; j < 3; j++) {
-            // Project the current vertex
             vec2_t projected_point = project(transformed_vertices[j]);
 
-            // Scale and translate the projected points to the middle of the screen
+            // Center
             projected_point.x += (window_width / 2);
             projected_point.y += (window_height / 2);
 
             projected_triangle.points[j] = projected_point;
         }
 
-        // Save the projected triangle in the array of triangles to render
         array_push(triangles_to_render, projected_triangle);
     }
 }
