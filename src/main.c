@@ -119,12 +119,15 @@ void update(void) {
 
 
   // Rotate the cube
-  mesh.rotation.x += 0.01;
-  mesh.rotation.y += 0.01;
-  mesh.rotation.z += 0.01;
+  mesh.rotation.x += 0.02;
+  mesh.rotation.y += 0.02;
+  mesh.rotation.z += 0.02;
 
-  // mesh.scale.x += 0.002;
+  mesh.scale.x -= 0.002;
+  mesh.scale.y -= 0.002;
+  mesh.scale.z -= 0.002;
   mesh.translation.z = 5;
+  mesh.translation.y +=0.005;
 
   // Create matrices that will be used to multiply mesh vertices
   mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
@@ -239,7 +242,7 @@ void render(void){
   // draw_grid(0xFF0000FF, 15);
 
   // Fill background with gray color
-  clear_color_buffer(0xFF151515);
+  clear_color_buffer(0xFF999999);
 
   // Loop all projected triangles and render them
   int num_triangles = array_length(triangles_to_render);
