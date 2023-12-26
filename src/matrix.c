@@ -19,7 +19,7 @@ mat4_t mat4_identity(void) {
   return eye;
 }
 
-vec4_t mat4_t_mul_vec4(mat4_t m, vec4_t v){
+vec4_t mat4_mul_vec4(mat4_t m, vec4_t v){
   // Example of this multiplication (values can be all different):
   // | sx 0 0 0 |   | x |   | x'|
   // | 0 sy 0 0 | X | y | = | y'|
@@ -34,6 +34,16 @@ vec4_t mat4_t_mul_vec4(mat4_t m, vec4_t v){
   result.w = m.m[3][0] * v.x + m.m[3][1] * v.y + m.m[3][2] * v.z + m.m[3][3] * v.w;
 
   return result;
+}
+
+mat4_t mat4_mul_mat4(mat4_t a, mat4_t b) {
+    mat4_t m;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            m.m[i][j] = a.m[i][0] * b.m[0][j] + a.m[i][1] * b.m[1][j] + a.m[i][2] * b.m[2][j] + a.m[i][3] * b.m[3][j];
+        }
+    }
+    return m;
 }
 
 mat4_t mat4_make_scale(float sx, float sy, float sz){
