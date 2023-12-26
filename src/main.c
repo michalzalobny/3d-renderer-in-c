@@ -126,9 +126,12 @@ void update(void) {
   // mesh.scale.x += 0.002;
   mesh.translation.z = 5;
 
-  // Create scale matrix that will be used to multiply mesh vertices
-  mat4_t scale_matrix = mat4_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
-  mat4_t translation_matrix = mat4_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
+  // Create matrices that will be used to multiply mesh vertices
+  mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+  mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
+  mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
+  mat4_t rotation_matrix_y = mat4_make_rotation_y(mesh.rotation.y);
+  mat4_t rotation_matrix_z = mat4_make_rotation_z(mesh.rotation.z);
 
     // Loop all triangle faces of our mesh
     int num_faces = array_length(mesh.faces);
@@ -146,13 +149,14 @@ void update(void) {
         for (int j = 0; j < 3; j++) {
             vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 
-            // Use a matrix to scale the vertex
+            // Use a matrces to scale, rotate, and translate the vertex
             transformed_vertex = mat4_t_mul_vec4(scale_matrix, transformed_vertex);
-            transformed_vertex = mat4_t_mul_vec4(translation_matrix, transformed_vertex);
 
-            // transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
-            // transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
-            // transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
+            transformed_vertex = mat4_t_mul_vec4(rotation_matrix_x, transformed_vertex);
+            transformed_vertex = mat4_t_mul_vec4(rotation_matrix_y, transformed_vertex);
+            transformed_vertex = mat4_t_mul_vec4(rotation_matrix_z, transformed_vertex);
+
+            transformed_vertex = mat4_t_mul_vec4(translation_matrix, transformed_vertex);
 
             transformed_vertices[j] = vec3_from_vec4(transformed_vertex);
         }
