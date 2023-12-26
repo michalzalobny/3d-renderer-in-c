@@ -8,6 +8,7 @@
 #include "vector.h"
 #include "mesh.h"
 #include "array.h"
+#include "matrix.h"
 
 // Array of triangles that should be rendere frame by frame
 triangle_t* triangles_to_render = NULL;
@@ -122,8 +123,12 @@ void update(void) {
   mesh.rotation.y += 0.01;
   mesh.rotation.z += 0.01;
 
-    // Loop all triangle faces of our mesh
+  mesh.scale.x += 0.002;
 
+  // Create scale matrix that will be used to multiply mesh vertices
+  mat4_t scale_matrix = mat4_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+
+    // Loop all triangle faces of our mesh
     int num_faces = array_length(mesh.faces);
     for (int i = 0; i < num_faces; i++) {
         face_t mesh_face = mesh.faces[i];
@@ -137,9 +142,10 @@ void update(void) {
 
         // Loop all three vertices of this current face and apply transformations
         for (int j = 0; j < 3; j++) {
-            vec3_t transformed_vertex = face_vertices[j];
+            vec4_t transformed_vertex = vec4_from_vec3(face_vertices[j]);
 
             // Use a matrix to scale the vertex
+            transformed_vertex = mat4_t_mul_vec4(scale_matrix, transformed_vertex);
 
             // transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
             // transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
@@ -148,7 +154,7 @@ void update(void) {
             // Translate the vertices away from the camera
             transformed_vertex.z += 5;
 
-            transformed_vertices[j] = transformed_vertex;
+            transformed_vertices[j] = vec3_from_vec4(transformed_vertex);
         }
 
         if(CULL_BACKFACE){
