@@ -128,10 +128,12 @@ void update(void) {
 
   // Create matrices that will be used to multiply mesh vertices
   mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
-  mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
+
   mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
   mat4_t rotation_matrix_y = mat4_make_rotation_y(mesh.rotation.y);
   mat4_t rotation_matrix_z = mat4_make_rotation_z(mesh.rotation.z);
+
+  mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
 
     // Loop all triangle faces of our mesh
     int num_faces = array_length(mesh.faces);
