@@ -14,8 +14,7 @@
 triangle_t* triangles_to_render = NULL;
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = 0};
-
-float fov_factor = 640;
+mat4_t proj_matrix;
 
 bool is_running = false;
 
@@ -38,6 +37,13 @@ void setup(void){
     window_width,
     window_height
   );
+
+  // Initialize the perspective projection matrix
+  float fov = M_PI / 3.0; // the same as 180/3, or 60deg
+  float aspect = (float)window_height / (float)window_width;
+  float znear = 0.1;
+  float zfar = 100.0;
+  proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
 
   // Load the cube values in the mesh data structure
   load_cube_mesh_data();
@@ -77,32 +83,6 @@ void process_input(void){
       break;
 
   }
-}
-
-// Convert 3D point to 2D
-vec2_t project(vec3_t point){
-
-  float w = 1;
-
-  float x_2 = point.x / point.z * w;
-
-  float rb = sqrt(pow(x_2, 2.0) + pow(w, 2.0));
-  float cb = (rb * point.z) / w;
-
-  float y_2 = (point.y * rb) / cb;
-
-  vec2_t projected_point = {
-    .x = fov_factor * (x_2),
-    .y = fov_factor * (y_2)
-  };
-
-  // Old solution (simplified one, works if w = 1)
-  // vec2_t projected_point = {
-  //   .x = fov_factor * (point.x) / point.z,
-  //   .y = fov_factor * (point.y) / point.z
-  // };
-
-  return projected_point;
 }
 
 void update(void) {
@@ -195,17 +175,20 @@ void update(void) {
           }
         }
 
-     
-
-        vec2_t projected_points[3];
+        vec4_t projected_points[3];
 
         // Loop all three vertices to perform projection
         for (int j = 0; j < 3; j++) {
-            projected_points[j] = project(transformed_vertices[j]);
+            // Project current point
+            projected_points[j] = mat4_mul_vec4_project(proj_matrix, vec4_from_vec3(transformed_vertices[j]));
 
-            // Center
-            projected_points[j].x += (window_width / 2);
-            projected_points[j].y += (window_height / 2);
+            // Scale into the view
+            projected_points[j].x *= (window_width / 2.0);
+            projected_points[j].y *= (window_height / 2.0);
+
+            // Center points
+            projected_points[j].x += (window_width / 2.0);
+            projected_points[j].y += (window_height / 2.0);
         }
 
         // Calculate avg depth based on the vertices Z value after the transformations
