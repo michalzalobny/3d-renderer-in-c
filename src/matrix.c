@@ -121,6 +121,8 @@ mat4_t mat4_make_rotation_z(float angle) {
     return m;
 }
 
+//https://www.youtube.com/watch?v=U0_ONQQ5ZNM - more explanation of this mat in the second part of the video
+
 mat4_t mat4_make_perspective(float fov, float aspect, float znear, float zfar) {
     // | (h/w)*1/tan(fov/2)             0              0                 0 |
     // |                  0  1/tan(fov/2)              0                 0 |
