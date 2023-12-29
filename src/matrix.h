@@ -16,7 +16,11 @@ mat4_t mat4_make_translation(float tx, float ty, float tz);
 mat4_t mat4_make_rotation_x(float angle);
 mat4_t mat4_make_rotation_y(float angle);
 mat4_t mat4_make_rotation_z(float angle);
-mat4_t mat4_make_perspective(float fov, float aspect, float znear, float zfar);
+mat4_t mat4_make_ortho(float l, float r, float b, float t, float n, float f);
+mat4_t mat4_make_perspective(float n, float f);
+mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far);
 vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v);
+mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfar);
+mat4_t mat4_make_perspective_opengl(float fov, float aspect, float znear, float zfar);
 
 #endif

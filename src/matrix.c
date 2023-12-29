@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "matrix.h"
+#include "stdio.h"
 
 mat4_t mat4_identity(void) {
   // | 1 0 0 0 |
@@ -121,21 +122,10 @@ mat4_t mat4_make_rotation_z(float angle) {
     return m;
 }
 
-//https://www.youtube.com/watch?v=U0_ONQQ5ZNM - more explanation of this mat in the second part of the video
+//https://www.youtube.com/watch?v=U0_ONQQ5ZNM - more explanation of this those matrices
+//https://www.youtube.com/watch?v=vu1VNKHfzqQ here too - start with this one
 
-mat4_t mat4_make_perspective(float fov, float aspect, float znear, float zfar) {
-    // | (h/w)*1/tan(fov/2)             0              0                 0 |
-    // |                  0  1/tan(fov/2)              0                 0 |
-    // |                  0             0     zf/(zf-zn)  (-zf*zn)/(zf-zn) |
-    // |                  0             0              1                 0 |
-    mat4_t m = {{{ 0 }}};
-    m.m[0][0] = aspect * (1 / tan(fov / 2));
-    m.m[1][1] = 1 / tan(fov / 2);
-    m.m[2][2] = zfar / (zfar - znear);
-    m.m[2][3] = (-zfar * znear) / (zfar - znear);
-    m.m[3][2] = 1.0;
-    return m;
-}
+
 
 vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v) {
     // multiply the projection matrix by our original vector
@@ -149,3 +139,97 @@ vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v) {
     }
     return result;
 }
+
+// translate and scale projected vector to -1 to 1 range
+mat4_t mat4_make_ortho(float l, float b, float n, float r, float t, float f) {
+    // | 2/(r-l)        0              0           -(r+l)/(r-l) |
+    // |       0  2/(t-b)              0           -(t+b)/(t-b) |
+    // |       0        0        2/(f-n)           -(f+n)/(f-n) |
+    // |       0        0              0                      1 |
+    mat4_t m = {{{ 0 }}};
+    m.m[0][0] = 2.0 / (r - l);
+    m.m[0][3] = -(r + l) / (r - l);
+    m.m[1][1] = 2.0 / (t - b);
+    m.m[1][3] = -(t + b) / (t - b);
+    m.m[2][2] = 2.0 / (f - n);
+    m.m[2][3] = -(f + n) / (f - n);
+    m.m[3][3] = 1.0;
+
+    return m;
+}
+
+mat4_t mat4_make_perspective(float n, float f) {
+    // | n  0       0     0 |
+    // | 0  n       0     0 |
+    // | 0  0   (f+n) (-fn) |
+    // | 0  0       1     0 |
+   
+    mat4_t m = {{{ 0 }}};
+    m.m[0][0] = n;
+    m.m[1][1] = n;
+    m.m[2][2] = f + n;
+    m.m[2][3] = -f * n;
+    m.m[3][2] = 1.0;
+
+    return m;
+} 
+
+mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far) {
+    // Orthographic matrix X Perspective matrix
+
+    // Usually r,t,f = 1.0 and l,b,n = -1.0, but here we adjust them to the aspect ratio and fov
+
+    float r = near * tan(fov / 2.0) * aspect_ratio; // aspect_ratio = width / height
+    float t = near * tan(fov / 2.0);
+    float f = 1.0;
+  
+    float l = -r;
+    float b = -t;
+    float n = -f;
+
+    mat4_t t_ortho = mat4_make_ortho(l, b, n, r, t, f);
+    mat4_t t_perspective = mat4_make_perspective(near, far);
+  
+    mat4_t m = mat4_mul_mat4(t_ortho, t_perspective);
+    return m;
+}
+
+
+mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfar){
+  // | (h/w)*1/tan(fov/2)             0              0                 0 |
+  // |                  0  1/tan(fov/2)              0                 0 |
+  // |                  0             0     zf/(zf-zn)  (-zf*zn)/(zf-zn) |
+  // |                  0             0              1                 0 |
+  mat4_t m = {{{ 0 }}};
+  m.m[0][0] = aspect * (1 / tan(fov / 2));
+  m.m[1][1] = 1 / tan(fov / 2);
+  m.m[2][2] = zfar / (zfar - znear);
+  m.m[2][3] = (-zfar * znear) / (zfar - znear);
+  m.m[3][2] = 1.0;
+  return m;
+}
+
+
+mat4_t mat4_make_perspective_opengl(float fov, float aspect, float znear, float zfar){
+  // |  n/r   0      0              0            |
+  // |  0     n/t    0              0            |
+  // |  0     0      -(f+n)/(f-n)   (-2fn)/(f-n) |
+  // |  0     0      -1             0            |
+
+  float n = znear;
+  float f = zfar;
+  float t = tan(fov / 2) * n;
+  float r = t * aspect;
+
+  mat4_t m = {{{ 0 }}};
+  m.m[0][0] = n / r;
+  m.m[1][1] = n / t;
+  m.m[2][2] = -(f + n) / (f - n);
+  m.m[2][3] = (-2 * f * n) / (f - n);
+  m.m[3][2] = -1.0;
+
+  return m;
+
+}
+
+

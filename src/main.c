@@ -40,10 +40,13 @@ void setup(void){
 
   // Initialize the perspective projection matrix
   float fov = M_PI / 3.0; // the same as 180/3, or 60deg
-  float aspect = (float)window_height / (float)window_width;
+  float aspect = (float)window_width / (float)window_height;
   float znear = 0.1;
-  float zfar = 100.0;
-  proj_matrix = mat4_make_perspective(fov, aspect, znear, zfar);
+  float zfar = 10.0;
+  proj_matrix = mat4_make_projection(fov, aspect, znear, zfar);
+  // proj_matrix = mat4_make_perspective_old(fov, aspect, znear, zfar);
+  // proj_matrix = mat4_make_perspective_opengl(fov, aspect, znear, zfar);
+
 
   // Load the cube values in the mesh data structure
   load_cube_mesh_data();
@@ -103,11 +106,11 @@ void update(void) {
   mesh.rotation.y += 0.02;
   mesh.rotation.z += 0.02;
 
-  mesh.scale.x -= 0.002;
-  mesh.scale.y -= 0.002;
-  mesh.scale.z -= 0.002;
+  // mesh.scale.x = 0.2;
+  // mesh.scale.y = 0.2;
+  // mesh.scale.z = 0.2;
   mesh.translation.z = 5;
-  mesh.translation.y +=0.005;
+  // mesh.translation.y +=0.001;
 
   // Create matrices that will be used to multiply mesh vertices
   mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
