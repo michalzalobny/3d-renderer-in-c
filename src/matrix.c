@@ -142,20 +142,42 @@ vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v) {
 
 // translate and scale projected vector to -1 to 1 range
 mat4_t mat4_make_ortho(float l, float b, float n, float r, float t, float f) {
-    // | 2/(r-l)        0              0           -(r+l)/(r-l) |
-    // |       0  2/(t-b)              0           -(t+b)/(t-b) |
-    // |       0        0        2/(f-n)           -(f+n)/(f-n) |
-    // |       0        0              0                      1 |
-    mat4_t m = {{{ 0 }}};
-    m.m[0][0] = 2.0 / (r - l);
-    m.m[0][3] = -(r + l) / (r - l);
-    m.m[1][1] = 2.0 / (t - b);
-    m.m[1][3] = -(t + b) / (t - b);
-    m.m[2][2] = 2.0 / (f - n);
-    m.m[2][3] = -(f + n) / (f - n);
-    m.m[3][3] = 1.0;
+    // translate to origin and scale to -1 to 1 range -> width, height, depth should be 2
 
-    return m;
+    // Coordinates of center of the provided cube are:
+    float c_x = (l + r) / 2;
+    float c_y = (b + t) / 2;
+    float c_z = (n + f) / 2;
+
+    // To translate the cube to the origin, we need to subtract the center coordinates from each vertex
+    // | 1 0 0 -c_x |
+    // | 0 1 0 -c_y |
+    // | 0 0 1 -c_z |
+    // | 0 0 0    1 |
+    mat4_t trans = mat4_identity();
+    trans.m[0][3] = -c_x;
+    trans.m[1][3] = -c_y;
+    trans.m[2][3] = -c_z;
+
+    // Current width, height, depth of the cube:
+    float width = r - l;
+    float height = t - b;
+    float depth = f - n;
+
+    // To scale the cube to have width, height, depth of 2 (be from -1 to 1)
+    // we need to multiply each vertex by 2/width, 2/height, 2/depth
+    // | 2/width 0        0        0 |
+    // | 0       2/height  0       0 |
+    // | 0       0        2/depth  0 |
+    // | 0       0        0        1 |
+
+    mat4_t scale = mat4_identity();
+    scale.m[0][0] = 2.0 / width;
+    scale.m[1][1] = 2.0 / height;
+    scale.m[2][2] = 2.0 / depth;
+
+    // Now we need to combine the two matrices into one
+    return mat4_mul_mat4(trans, scale);
 }
 
 mat4_t mat4_make_perspective(float n, float f) {
@@ -196,7 +218,7 @@ mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far
 
 
 mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfar){
-  // | (h/w)*1/tan(fov/2)             0              0                 0 |
+  // | (w/h)*1/tan(fov/2)             0              0                 0 |
   // |                  0  1/tan(fov/2)              0                 0 |
   // |                  0             0     zf/(zf-zn)  (-zf*zn)/(zf-zn) |
   // |                  0             0              1                 0 |
