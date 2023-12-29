@@ -47,6 +47,14 @@ void setup(void){
   // proj_matrix = mat4_make_perspective_old(fov, aspect, znear, zfar);
   // proj_matrix = mat4_make_perspective_opengl(fov, aspect, znear, zfar);
 
+  // Print projection matrix
+  for(int i=0; i<4; i++){
+    for(int j=0; j<4; j++){
+      printf("%f ", proj_matrix.m[i][j]);
+    }
+    printf("\n");
+  }
+
 
   // Load the cube values in the mesh data structure
   load_cube_mesh_data();
