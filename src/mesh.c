@@ -16,6 +16,7 @@ mesh_t mesh = {
   .translation = {.x = 0, .y = 0, .z = 0}
 };
 
+// cube with side length 2 centered at the origin
 vec3_t cube_vertices[N_CUBE_VERTICES] = {
   { .x = -1, .y = -1, .z = -1 }, // 1
   { .x = -1, .y =  1, .z = -1 }, // 2

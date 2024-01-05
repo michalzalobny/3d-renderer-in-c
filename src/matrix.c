@@ -199,15 +199,13 @@ mat4_t mat4_make_perspective(float n, float f) {
 mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far) {
     // Orthographic matrix X Perspective matrix
 
-    // Usually r,t,f = 1.0 and l,b,n = -1.0, but here we adjust them to the aspect ratio and fov
-
     float r = near * tan(fov / 2.0) * aspect_ratio; // aspect_ratio = width / height
     float t = near * tan(fov / 2.0);
-    float f = 1.0;
+    float f = far;
   
     float l = -r;
     float b = -t;
-    float n = -f;
+    float n = near;
 
     mat4_t t_ortho = mat4_make_ortho(l, b, n, r, t, f);
     mat4_t t_perspective = mat4_make_perspective(near, far);
@@ -229,29 +227,6 @@ mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfa
   m.m[2][3] = (-zfar * znear) / (zfar - znear);
   m.m[3][2] = 1.0;
   return m;
-}
-
-
-mat4_t mat4_make_perspective_opengl(float fov, float aspect, float znear, float zfar){
-  // |  n/r   0      0              0            |
-  // |  0     n/t    0              0            |
-  // |  0     0      -(f+n)/(f-n)   (-2fn)/(f-n) |
-  // |  0     0      -1             0            |
-
-  float n = znear;
-  float f = zfar;
-  float t = tan(fov / 2) * n;
-  float r = t * aspect;
-
-  mat4_t m = {{{ 0 }}};
-  m.m[0][0] = n / r;
-  m.m[1][1] = n / t;
-  m.m[2][2] = -(f + n) / (f - n);
-  m.m[2][3] = (-2 * f * n) / (f - n);
-  m.m[3][2] = -1.0;
-
-  return m;
-
 }
 
 

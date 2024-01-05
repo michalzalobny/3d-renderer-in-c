@@ -44,8 +44,6 @@ void setup(void){
   float znear = 0.1;
   float zfar = 10.0;
   proj_matrix = mat4_make_projection(fov, aspect, znear, zfar);
-  // proj_matrix = mat4_make_perspective_old(fov, aspect, znear, zfar);
-  // proj_matrix = mat4_make_perspective_opengl(fov, aspect, znear, zfar);
 
   // Print projection matrix
   for(int i=0; i<4; i++){
@@ -110,13 +108,13 @@ void update(void) {
 
 
   // Rotate the cube
-  mesh.rotation.x += 0.02;
+  // mesh.rotation.x += 0.02;
   mesh.rotation.y += 0.02;
-  mesh.rotation.z += 0.02;
+  // mesh.rotation.z += 0.02;
 
-  // mesh.scale.x = 0.2;
-  // mesh.scale.y = 0.2;
-  // mesh.scale.z = 0.2;
+  // mesh.scale.x = 0.5;
+  // mesh.scale.y = 0.5;
+  // mesh.scale.z = 0.5;
   mesh.translation.z = 5;
   // mesh.translation.y +=0.001;
 
