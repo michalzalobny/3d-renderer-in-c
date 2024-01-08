@@ -59,11 +59,11 @@ Based on Gustavo Pezzi's course
 
   - **Command via Homebrew**: If Homebrew is not installed, first install it from [brew.sh](https://brew.sh/). Then, `brew install sdl2` in the Terminal.
 
-- **Importing own mesh with Blender**
+# Importing mesh with Blender
 
-- When importing your own mesh, make sure to export it as a Wavefront (.obj) file. Then, in the export settings, make sure to check the following options:
+When importing your own mesh, make sure to export it as a Wavefront (.obj) file. Then, in the export settings, make sure to check the following options:
 
-  - Apply Modifiers
-  - Normals
-  - UV Coordinates
-  - Triangulate Faces (so that the mesh is made of triangles, not quads)
+- Apply Modifiers
+- Normals
+- UV Coordinates
+- Triangulate Faces (so that the mesh is made of triangles, not quads)
