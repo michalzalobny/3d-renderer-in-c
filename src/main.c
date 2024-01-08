@@ -9,6 +9,7 @@
 #include "mesh.h"
 #include "array.h"
 #include "matrix.h"
+#include "light.h"
 
 // Array of triangles that should be rendere frame by frame
 triangle_t* triangles_to_render = NULL;
@@ -45,18 +46,9 @@ void setup(void){
   float zfar = 10.0;
   proj_matrix = mat4_make_projection(fov, aspect, znear, zfar);
 
-  // Print projection matrix
-  for(int i=0; i<4; i++){
-    for(int j=0; j<4; j++){
-      printf("%f ", proj_matrix.m[i][j]);
-    }
-    printf("\n");
-  }
-
-
   // Load the cube values in the mesh data structure
-  load_cube_mesh_data();
-  // load_obj_file_data("./assets/cube.obj");
+  // load_cube_mesh_data();
+  load_obj_file_data("./assets/f22.obj");
 }
 
 void handle_key_press(SDL_Keycode keycode){
@@ -108,8 +100,8 @@ void update(void) {
 
 
   // Rotate the cube
-  // mesh.rotation.x += 0.02;
-  mesh.rotation.y += 0.02;
+  mesh.rotation.x += 0.01;
+  // mesh.rotation.y += 0.02;
   // mesh.rotation.z += 0.02;
 
   // mesh.scale.x = 0.5;
@@ -157,27 +149,27 @@ void update(void) {
             transformed_vertices[j] = vec3_from_vec4(transformed_vertex);
         }
 
+        // Check backface culling
+        vec3_t vector_a = transformed_vertices[0]; /*   A   */
+        vec3_t vector_b = transformed_vertices[1]; /*  / \  */
+        vec3_t vector_c = transformed_vertices[2]; /* C---B */
+
+        // Get the vector subtraction of B-A and C-A
+        vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+        vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+        vec3_normalize(&vector_ab);
+        vec3_normalize(&vector_ac);
+
+        // Compute the face normal (using cross product to find perpendicular)
+        vec3_t normal = vec3_cross(vector_ab, vector_ac);
+        vec3_normalize(&normal);
+
+        vec3_t camera_ray = vec3_sub(camera_position, vector_a);
+
+        // How aligned the camera ray is with the face normal
+        float dot_normal_camera = vec3_dot(normal, camera_ray);
+
         if(CULL_BACKFACE){
-          // Check backface culling
-          vec3_t vector_a = transformed_vertices[0]; /*   A   */
-          vec3_t vector_b = transformed_vertices[1]; /*  / \  */
-          vec3_t vector_c = transformed_vertices[2]; /* C---B */
-
-          // Get the vector subtraction of B-A and C-A
-          vec3_t vector_ab = vec3_sub(vector_b, vector_a);
-          vec3_t vector_ac = vec3_sub(vector_c, vector_a);
-          vec3_normalize(&vector_ab);
-          vec3_normalize(&vector_ac);
-
-          // Compute the face normal (using cross product to find perpendicular)
-          vec3_t normal = vec3_cross(vector_ab, vector_ac);
-          vec3_normalize(&normal);
-
-          vec3_t camera_ray = vec3_sub(camera_position, vector_a);
-
-          // How aligned the camera ray is with the face normal
-          float dot_normal_camera = vec3_dot(normal, camera_ray);
-
           // Don't render if not facing camera
           if (dot_normal_camera < 0) {
               continue;
@@ -202,6 +194,12 @@ void update(void) {
 
         // Calculate avg depth based on the vertices Z value after the transformations
         float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3.0;
+
+        // Calculate shade intensity based on how aligned is the face normal and light dir
+        float light_intensity_factor = -vec3_dot(normal, light.direction);
+
+        // Calculate triangle final color based on light alignment angle
+        uint32_t triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
  
         triangle_t projected_triangle = {
           .points = {
@@ -209,7 +207,7 @@ void update(void) {
             {projected_points[1].x, projected_points[1].y},
             {projected_points[2].x, projected_points[2].y},
           },
-          .color = mesh_face.color,
+          .color = triangle_color,
           .avg_depth = avg_depth
         };
 
@@ -271,7 +269,6 @@ void render(void){
       );
     }
 
-   
   }
 
   render_color_buffer();
