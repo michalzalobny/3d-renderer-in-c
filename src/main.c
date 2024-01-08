@@ -100,7 +100,7 @@ void update(void) {
 
 
   // Rotate the cube
-  mesh.rotation.x += 0.01;
+  // mesh.rotation.x += 0.01;
   // mesh.rotation.y += 0.02;
   // mesh.rotation.z += 0.02;
 
@@ -187,6 +187,9 @@ void update(void) {
             projected_points[j].x *= (window_width / 2.0);
             projected_points[j].y *= (window_height / 2.0);
 
+            // Invert y values to account for flipped screen y coordinates
+            projected_points[j].y *= -1;
+                
             // Center points
             projected_points[j].x += (window_width / 2.0);
             projected_points[j].y += (window_height / 2.0);
