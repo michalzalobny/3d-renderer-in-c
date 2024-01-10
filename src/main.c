@@ -25,7 +25,7 @@ bool CULL_BACKFACE = true;
 bool RENDER_WIREFRAME = true;
 bool RENDER_FILL = true;
 bool RENDER_VERTICES = true;
-bool RENDER_TEXTURED = false;
+bool RENDER_TEXTURED = true;
 
 int previous_frame_time = 0;
 
@@ -75,6 +75,9 @@ void handle_key_press(SDL_Keycode keycode){
       break;
     case SDLK_4:
       RENDER_VERTICES = !RENDER_VERTICES;
+      break;
+    case SDLK_5:
+      RENDER_TEXTURED = !RENDER_TEXTURED;
       break;
   }
 }
