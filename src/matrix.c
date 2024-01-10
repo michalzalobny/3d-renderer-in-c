@@ -38,13 +38,13 @@ vec4_t mat4_mul_vec4(mat4_t m, vec4_t v){
 }
 
 mat4_t mat4_mul_mat4(mat4_t a, mat4_t b) {
-    mat4_t m;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            m.m[i][j] = a.m[i][0] * b.m[0][j] + a.m[i][1] * b.m[1][j] + a.m[i][2] * b.m[2][j] + a.m[i][3] * b.m[3][j];
-        }
-    }
-    return m;
+  mat4_t m;
+  for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < 4; j++) {
+          m.m[i][j] = a.m[i][0] * b.m[0][j] + a.m[i][1] * b.m[1][j] + a.m[i][2] * b.m[2][j] + a.m[i][3] * b.m[3][j];
+      }
+  }
+  return m;
 }
 
 mat4_t mat4_make_scale(float sx, float sy, float sz){
@@ -78,142 +78,139 @@ mat4_t mat4_make_translation(float tx, float ty, float tz){
 }
 
 mat4_t mat4_make_rotation_x(float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    // | 1  0  0  0 |
-    // | 0  c -s  0 |
-    // | 0  s  c  0 |
-    // | 0  0  0  1 |
-    mat4_t m = mat4_identity();
-    m.m[1][1] = c;
-    m.m[1][2] = -s;
-    m.m[2][1] = s;
-    m.m[2][2] = c;
-    return m;
+  float c = cos(angle);
+  float s = sin(angle);
+  // | 1  0  0  0 |
+  // | 0  c -s  0 |
+  // | 0  s  c  0 |
+  // | 0  0  0  1 |
+  mat4_t m = mat4_identity();
+  m.m[1][1] = c;
+  m.m[1][2] = -s;
+  m.m[2][1] = s;
+  m.m[2][2] = c;
+  return m;
 }
 
 mat4_t mat4_make_rotation_y(float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    // |  c  0  s  0 |
-    // |  0  1  0  0 |
-    // | -s  0  c  0 |
-    // |  0  0  0  1 |
-    mat4_t m = mat4_identity();
-    m.m[0][0] = c;
-    m.m[0][2] = s;
-    m.m[2][0] = -s;
-    m.m[2][2] = c;
-    return m;
+  float c = cos(angle);
+  float s = sin(angle);
+  // |  c  0  s  0 |
+  // |  0  1  0  0 |
+  // | -s  0  c  0 |
+  // |  0  0  0  1 |
+  mat4_t m = mat4_identity();
+  m.m[0][0] = c;
+  m.m[0][2] = s;
+  m.m[2][0] = -s;
+  m.m[2][2] = c;
+  return m;
 }
 
 mat4_t mat4_make_rotation_z(float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    // | c -s  0  0 |
-    // | s  c  0  0 |
-    // | 0  0  1  0 |
-    // | 0  0  0  1 |
-    mat4_t m = mat4_identity();
-    m.m[0][0] = c;
-    m.m[0][1] = -s;
-    m.m[1][0] = s;
-    m.m[1][1] = c;
-    return m;
+  float c = cos(angle);
+  float s = sin(angle);
+  // | c -s  0  0 |
+  // | s  c  0  0 |
+  // | 0  0  1  0 |
+  // | 0  0  0  1 |
+  mat4_t m = mat4_identity();
+  m.m[0][0] = c;
+  m.m[0][1] = -s;
+  m.m[1][0] = s;
+  m.m[1][1] = c;
+  return m;
 }
 
 //https://www.youtube.com/watch?v=U0_ONQQ5ZNM - more explanation of this those matrices
 //https://www.youtube.com/watch?v=vu1VNKHfzqQ here too - start with this one
 
-
-
 vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v) {
-    // multiply the projection matrix by our original vector
-    vec4_t result = mat4_mul_vec4(mat_proj, v);
+  // multiply the projection matrix by our original vector
+  vec4_t result = mat4_mul_vec4(mat_proj, v);
 
-    // perform perspective divide with original z-value that is now stored in w
-    if (result.w != 0.0) {
-        result.x /= result.w;
-        result.y /= result.w;
-        result.z /= result.w;
-    }
-    return result;
+  // perform perspective divide with original z-value that is now stored in w
+  if (result.w != 0.0) {
+      result.x /= result.w;
+      result.y /= result.w;
+      result.z /= result.w;
+  }
+  return result;
 }
 
 // translate and scale projected vector to -1 to 1 range
 mat4_t mat4_make_ortho(float l, float b, float n, float r, float t, float f) {
-    // translate to origin and scale to -1 to 1 range -> width, height, depth should be 2
+  // translate to origin and scale to -1 to 1 range -> width, height, depth should be 2
 
-    // Coordinates of center of the provided cube are:
-    float c_x = (l + r) / 2;
-    float c_y = (b + t) / 2;
-    float c_z = (n + f) / 2;
+  // Coordinates of center of the provided cube are:
+  float c_x = (l + r) / 2;
+  float c_y = (b + t) / 2;
+  float c_z = (n + f) / 2;
 
-    // To translate the cube to the origin, we need to subtract the center coordinates from each vertex
-    // | 1 0 0 -c_x |
-    // | 0 1 0 -c_y |
-    // | 0 0 1 -c_z |
-    // | 0 0 0    1 |
-    mat4_t trans = mat4_identity();
-    trans.m[0][3] = -c_x;
-    trans.m[1][3] = -c_y;
-    trans.m[2][3] = -c_z;
+  // To translate the cube to the origin, we need to subtract the center coordinates from each vertex
+  // | 1 0 0 -c_x |
+  // | 0 1 0 -c_y |
+  // | 0 0 1 -c_z |
+  // | 0 0 0    1 |
+  mat4_t trans = mat4_identity();
+  trans.m[0][3] = -c_x;
+  trans.m[1][3] = -c_y;
+  trans.m[2][3] = -c_z;
 
-    // Current width, height, depth of the cube:
-    float width = r - l;
-    float height = t - b;
-    float depth = f - n;
+  // Current width, height, depth of the cube:
+  float width = r - l;
+  float height = t - b;
+  float depth = f - n;
 
-    // To scale the cube to have width, height, depth of 2 (be from -1 to 1)
-    // we need to multiply each vertex by 2/width, 2/height, 2/depth
-    // | 2/width 0        0        0 |
-    // | 0       2/height  0       0 |
-    // | 0       0        2/depth  0 |
-    // | 0       0        0        1 |
+  // To scale the cube to have width, height, depth of 2 (be from -1 to 1)
+  // we need to multiply each vertex by 2/width, 2/height, 2/depth
+  // | 2/width 0        0        0 |
+  // | 0       2/height  0       0 |
+  // | 0       0        2/depth  0 |
+  // | 0       0        0        1 |
 
-    mat4_t scale = mat4_identity();
-    scale.m[0][0] = 2.0 / width;
-    scale.m[1][1] = 2.0 / height;
-    scale.m[2][2] = 2.0 / depth;
+  mat4_t scale = mat4_identity();
+  scale.m[0][0] = 2.0 / width;
+  scale.m[1][1] = 2.0 / height;
+  scale.m[2][2] = 2.0 / depth;
 
-    // Now we need to combine the two matrices into one
-    return mat4_mul_mat4(trans, scale);
+  // Now we need to combine the two matrices into one
+  return mat4_mul_mat4(trans, scale);
 }
 
 mat4_t mat4_make_perspective(float n, float f) {
-    // | n  0       0     0 |
-    // | 0  n       0     0 |
-    // | 0  0   (f+n) (-fn) |
-    // | 0  0       1     0 |
-   
-    mat4_t m = {{{ 0 }}};
-    m.m[0][0] = n;
-    m.m[1][1] = n;
-    m.m[2][2] = f + n;
-    m.m[2][3] = -f * n;
-    m.m[3][2] = 1.0;
+  // | n  0       0     0 |
+  // | 0  n       0     0 |
+  // | 0  0   (f+n) (-fn) |
+  // | 0  0       1     0 |
 
-    return m;
+  mat4_t m = {{{ 0 }}};
+  m.m[0][0] = n;
+  m.m[1][1] = n;
+  m.m[2][2] = f + n;
+  m.m[2][3] = -f * n;
+  m.m[3][2] = 1.0;
+
+  return m;
 } 
 
 mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far) {
-    // Orthographic matrix X Perspective matrix
+  // Orthographic matrix X Perspective matrix
 
-    float r = near * tan(fov / 2.0) * aspect_ratio; // aspect_ratio = width / height
-    float t = near * tan(fov / 2.0);
-    float f = far;
-  
-    float l = -r;
-    float b = -t;
-    float n = near;
+  float r = near * tan(fov / 2.0) * aspect_ratio; // aspect_ratio = width / height
+  float t = near * tan(fov / 2.0);
+  float f = far;
 
-    mat4_t t_ortho = mat4_make_ortho(l, b, n, r, t, f);
-    mat4_t t_perspective = mat4_make_perspective(near, far);
-  
-    mat4_t m = mat4_mul_mat4(t_ortho, t_perspective);
-    return m;
+  float l = -r;
+  float b = -t;
+  float n = near;
+
+  mat4_t t_ortho = mat4_make_ortho(l, b, n, r, t, f);
+  mat4_t t_perspective = mat4_make_perspective(near, far);
+
+  mat4_t m = mat4_mul_mat4(t_ortho, t_perspective);
+  return m;
 }
-
 
 mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfar){
   // | (w/h)*1/tan(fov/2)             0              0                 0 |
