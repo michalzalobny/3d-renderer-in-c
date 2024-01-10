@@ -21,10 +21,10 @@ mat4_t proj_matrix;
 
 bool is_running = false;
 
-bool CULL_BACKFACE = true;
-bool RENDER_WIREFRAME = true;
-bool RENDER_FILL = true;
-bool RENDER_VERTICES = true;
+bool CULL_BACKFACE = false;
+bool RENDER_WIREFRAME = false;
+bool RENDER_FILL = false;
+bool RENDER_VERTICES = false;
 bool RENDER_TEXTURED = true;
 
 int previous_frame_time = 0;
