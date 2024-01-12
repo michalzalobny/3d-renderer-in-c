@@ -22,7 +22,7 @@ mat4_t proj_matrix;
 
 bool is_running = false;
 
-bool CULL_BACKFACE = false;
+bool CULL_BACKFACE = true;
 bool RENDER_WIREFRAME = false;
 bool RENDER_FILL = false;
 bool RENDER_VERTICES = false;
@@ -307,6 +307,7 @@ void render(void){
 // Free memory that was dynamically allocated by the program
 void free_resources(void){
   free(color_buffer);
+  upng_free(png_texture);
   array_free(mesh.faces);
   array_free(mesh.vertices);
   array_free(triangles_to_render);
