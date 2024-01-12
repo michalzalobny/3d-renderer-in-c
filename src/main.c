@@ -113,7 +113,7 @@ void update(void) {
   // Rotate the cube
   mesh.rotation.x += 0.01;
   // mesh.rotation.y += 0.02;
-  // mesh.rotation.z += 0.02;
+  mesh.rotation.z += 0.01;
 
   // mesh.scale.x = 0.5;
   // mesh.scale.y = 0.5;
