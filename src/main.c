@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <math.h>
 
+#include "upng.h"
 #include "display.h"
 #include "vector.h"
 #include "mesh.h"
@@ -49,14 +50,12 @@ void setup(void){
   float zfar = 10.0;
   proj_matrix = mat4_make_projection(fov, aspect, znear, zfar);
 
-  // Manually load the hardcoded texture data from the static array
-  mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
-  texture_width = 64;
-  texture_height = 64;
-
   // Load the cube values in the mesh data structure
   load_cube_mesh_data();
   //load_obj_file_data("./assets/f22.obj");
+
+  // Load the texture information from an external PNG file
+  load_png_texture_data("./assets/cube.png");
 }
 
 void handle_key_press(SDL_Keycode keycode){
