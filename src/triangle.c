@@ -165,32 +165,33 @@ vec3_t barycentric_weights(vec2_t a, vec2_t b, vec2_t c, vec2_t p) {
 void draw_texel(
     int x, int y, uint32_t* texture,
     vec4_t point_a, vec4_t point_b, vec4_t point_c,
-    tex2_t uv_a, tex2_t uv_b, tex2_t uv_c
+    tex2_t a_uv, tex2_t b_uv, tex2_t c_uv
 ) {
     vec2_t p = { x, y };
     vec2_t a = vec2_from_vec4(point_a);
     vec2_t b = vec2_from_vec4(point_b);
     vec2_t c = vec2_from_vec4(point_c);
 
+    // Calculate the barycentric coordinates of our point 'p' inside the triangle
     vec3_t weights = barycentric_weights(a, b, c, p);
 
     float alpha = weights.x;
     float beta = weights.y;
     float gamma = weights.z;
 
-    // Variables to store the interpolated values of U and V and W for the current pixel
+    // Variables to store the interpolated values of U, V, and also 1/w for the current pixel
     float interpolated_u;
     float interpolated_v;
     float interpolated_reciprocal_w;
 
-    // Perform the interpolation of all U and V values using barycentric weights and a factor of 1/W
-    interpolated_u = (uv_a.u / point_a.w) * alpha + (uv_b.u / point_b.w) * beta + (uv_c.u / point_c.w) * gamma;
-    interpolated_v = (uv_a.v / point_a.w) * alpha + (uv_b.v / point_b.w) * beta + (uv_c.v / point_c.w) * gamma;
+    // Perform the interpolation of all U/w and V/w values using barycentric weights and a factor of 1/w
+    interpolated_u = (a_uv.u / point_a.w) * alpha + (b_uv.u / point_b.w) * beta + (c_uv.u / point_c.w) * gamma;
+    interpolated_v = (a_uv.v / point_a.w) * alpha + (b_uv.v / point_b.w) * beta + (c_uv.v / point_c.w) * gamma;
 
-    // Also interpolate the value of 1/W for the current pixel
-    interpolated_reciprocal_w = (1.0 / point_a.w) * alpha + (1.0 / point_b.w) * beta + (1.0 / point_c.w) * gamma;
+    // Also interpolate the value of 1/w for the current pixel
+    interpolated_reciprocal_w = (1 / point_a.w) * alpha + (1 / point_b.w) * beta + (1 / point_c.w) * gamma;
 
-    // Now we can divide bacl both interpolated values by 1/W
+    // Now we can divide back both interpolated values by 1/w
     interpolated_u /= interpolated_reciprocal_w;
     interpolated_v /= interpolated_reciprocal_w;
 
