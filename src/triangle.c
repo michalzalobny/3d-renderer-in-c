@@ -254,6 +254,11 @@ void draw_textured_triangle(
         float_swap(&v0, &v1);
     }
 
+    //Flip the V component to account for inverted UV coordinates (v grows downwards)
+    v0 = 1.0 - v0;
+    v1 = 1.0 - v1;
+    v2 = 1.0 - v2;
+
     // Create vector points and texture coords after we sort the vertices
     vec4_t point_a = { x0, y0, z0, w0 };
     vec4_t point_b = { x1, y1, z1, w1 };
