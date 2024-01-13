@@ -199,7 +199,17 @@ void draw_texel(
     int tex_x = abs((int)(interpolated_u * texture_width)) % texture_width; // % texture_width to wrap the texture and prevent buffer overflow
     int tex_y = abs((int)(interpolated_v * texture_height)) % texture_height;
 
-    draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
+    // Adjust 1/w so the pixels that are closer to the camera have smaller values
+    interpolated_reciprocal_w = 1 - interpolated_reciprocal_w;
+
+    // Only draw a pixel if depth value < than the one previous stored in the z-buffer // && interpolated_reciprocal_w > 0.0f is a hack to prevent drawing pixels behind the camera
+    if(interpolated_reciprocal_w < z_buffer[(window_width * y) + x] && interpolated_reciprocal_w > 0.0f) { 
+        draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
+
+        // Update the z-buffer value with 1/w value
+        z_buffer[(window_width * y) + x] = interpolated_reciprocal_w;
+    }
+ 
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -33,6 +33,7 @@ int previous_frame_time = 0;
 void setup(void){
   // Allocate the required memory in bytes to hold the color buffer
   color_buffer = (u_int32_t*) malloc(sizeof(u_int32_t) *  window_width * window_height);
+  z_buffer = (float*) malloc(sizeof(float) * window_width * window_height);
 
   // Creating an SDL texture that is used to display the color_buffer
   color_buffer_texture = SDL_CreateTexture(
@@ -301,12 +302,14 @@ void render(void){
 
   render_color_buffer();
   clear_color_buffer(0xFF000000);
+  clear_z_buffer();
   SDL_RenderPresent(renderer);
 }
 
 // Free memory that was dynamically allocated by the program
 void free_resources(void){
   free(color_buffer);
+  free(z_buffer);
   upng_free(png_texture);
   array_free(mesh.faces);
   array_free(mesh.vertices);
