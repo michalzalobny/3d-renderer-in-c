@@ -15,7 +15,10 @@
 #include "triangle.h"
 
 // Array of triangles that should be rendere frame by frame
-triangle_t* triangles_to_render = NULL;
+# define MAX_TRIANGLES_PER_MESH 10000
+triangle_t triangles_to_render[MAX_TRIANGLES_PER_MESH];
+int num_triangles_to_render = 0; // Used to move away from the dynamic allocation of the triangles_to_render array
+
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = 0};
 mat4_t proj_matrix;
@@ -53,10 +56,10 @@ void setup(void){
 
   // Load the cube values in the mesh data structure
   // load_cube_mesh_data();
-  load_obj_file_data("./assets/f22.obj");
+  load_obj_file_data("./assets/drone.obj");
 
   // Load the texture information from an external PNG file
-  load_png_texture_data("./assets/f22.png");
+  load_png_texture_data("./assets/drone.png");
 }
 
 void handle_key_press(SDL_Keycode keycode){
@@ -105,10 +108,8 @@ void update(void) {
   }
   previous_frame_time = SDL_GetTicks();
 
-  // Clear the array of triangles to render each frame
-  array_free(triangles_to_render);
-  triangles_to_render = NULL;
-
+  // Initialize the counter of triangles to render for the current frame
+  num_triangles_to_render = 0;
 
   // Rotate the cube
   mesh.rotation.x += 0.01;
@@ -226,7 +227,11 @@ void update(void) {
           .color = triangle_color
         };
 
-        array_push(triangles_to_render, projected_triangle);
+        if(num_triangles_to_render < MAX_TRIANGLES_PER_MESH){
+          triangles_to_render[num_triangles_to_render] = projected_triangle;
+          num_triangles_to_render++;
+        }
+      
     }
 
   
@@ -240,9 +245,8 @@ void render(void){
   clear_color_buffer(0xFF999999);
 
   // Loop all projected triangles and render them
-  int num_triangles = array_length(triangles_to_render);
 
-  for (int i = 0; i< num_triangles; i++){
+  for (int i = 0; i< num_triangles_to_render; i++){
     triangle_t triangle = triangles_to_render[i];
 
     if(RENDER_VERTICES){
@@ -297,7 +301,6 @@ void free_resources(void){
   upng_free(png_texture);
   array_free(mesh.faces);
   array_free(mesh.vertices);
-  array_free(triangles_to_render);
 }
 
 int main (void) {
