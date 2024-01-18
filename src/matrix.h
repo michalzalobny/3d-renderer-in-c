@@ -21,7 +21,6 @@ mat4_t mat4_make_perspective(float n, float f);
 mat4_t mat4_make_perspective_old(float fov, float aspect, float znear, float zfar);
 mat4_t mat4_make_projection(float fov, float aspect_ratio, float near, float far);
 vec4_t mat4_mul_vec4_project(mat4_t mat_proj, vec4_t v);
-
-
+mat4_t mat4_look_at(vec3_t eye, vec3_t target, vec3_t up);
 
 #endif
