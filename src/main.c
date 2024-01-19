@@ -85,6 +85,27 @@ void handle_key_press(SDL_Keycode keycode){
     case SDLK_5:
       RENDER_TEXTURED = !RENDER_TEXTURED;
       break;
+    case  SDLK_UP:
+      camera.position.y += 3.0 * delta_time;
+      break;
+    case  SDLK_DOWN:
+      camera.position.y -= 3.0 * delta_time;
+      break;
+    case  SDLK_a:
+      camera.yaw -= 1.0 * delta_time;
+      break;
+    case  SDLK_d:
+      camera.yaw += 1.0 * delta_time;
+      break;
+    case  SDLK_w :
+      camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+      camera.position = vec3_add(camera.position, camera.forward_velocity);
+      break;
+    case  SDLK_s:
+      camera.forward_velocity = vec3_mul(camera.direction, 5.0 * delta_time); 
+      camera.position = vec3_sub(camera.position, camera.forward_velocity);
+      break;
+    break;
   }
 }
 
@@ -129,14 +150,16 @@ void update(void) {
   mesh.translation.z = 5;
   // mesh.translation.y +=0.001;
 
-  // Change the camera position per animation frame
-  camera.position.x += 0.92 * delta_time;
-  camera.position.y += 0.92 * delta_time;
-  camera.position.z += 0.92 * delta_time;
+  // Initialize the target looking at the positive z-axis
+  vec3_t target = { 0, 0, 1 };
+  mat4_t camera_yaw_rotation = mat4_make_rotation_y(camera.yaw);
+  camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_yaw_rotation, vec4_from_vec3(target)));
 
-  // Create the view matrix looking at a hardcoded target point
-  vec3_t target = { 0, 0, 4.0 };
+  // Offset the camera position in the direction where the camera is pointing at
+  target = vec3_add(camera.position, camera.direction);
   vec3_t up_direction = { 0, 1, 0 };
+
+  // Create the view matrix
   view_matrix = mat4_look_at(camera.position, target, up_direction);
 
   // Create matrices that will be used to multiply mesh vertices
