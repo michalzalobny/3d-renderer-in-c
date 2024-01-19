@@ -25,6 +25,8 @@ mat4_t view_matrix;
 mat4_t world_matrix;
 
 bool is_running = false;
+int previous_frame_time = 0;
+float delta_time = 0;
 
 bool CULL_BACKFACE = true;
 bool RENDER_WIREFRAME = false;
@@ -32,7 +34,7 @@ bool RENDER_FILL = false;
 bool RENDER_VERTICES = false;
 bool RENDER_TEXTURED = true;
 
-int previous_frame_time = 0;
+
 
 void setup(void){
   // Allocate the required memory in bytes to hold the color buffer
@@ -107,6 +109,10 @@ void update(void) {
   if(time_to_wait>0 && time_to_wait <= FRAME_TARGET_TIME){
     SDL_Delay(time_to_wait);
   }
+
+  // Get delta_time factor converted to seconds to be used to update my objects
+  delta_time = (SDL_GetTicks() - previous_frame_time) / 1000.0;
+
   previous_frame_time = SDL_GetTicks();
 
   // Initialize the counter of triangles to render for the current frame
@@ -124,9 +130,9 @@ void update(void) {
   // mesh.translation.y +=0.001;
 
   // Change the camera position per animation frame
-  camera.position.x += 0.09;
-  camera.position.y += 0.07;
-  camera.position.z += 0.07;
+  camera.position.x += 0.92 * delta_time;
+  camera.position.y += 0.92 * delta_time;
+  camera.position.z += 0.92 * delta_time;
 
   // Create the view matrix looking at a hardcoded target point
   vec3_t target = { 0, 0, 4.0 };
