@@ -14,6 +14,7 @@
 #include "texture.h"
 #include "triangle.h"
 #include "camera.h"
+#include "clipping.h"
 
 // Array of triangles that should be rendere frame by frame
 # define MAX_TRIANGLES_PER_MESH 10000
