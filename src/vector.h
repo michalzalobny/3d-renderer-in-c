@@ -40,5 +40,6 @@ vec4_t vec4_from_vec3(vec3_t v);
 vec3_t vec3_from_vec4(vec4_t v);
 vec2_t vec2_from_vec4(vec4_t v);
 vec3_t vec3_new(float x, float y, float z);
+vec3_t vec3_clone(vec3_t* v);
 
 #endif

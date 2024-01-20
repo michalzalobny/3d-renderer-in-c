@@ -154,3 +154,8 @@ vec3_t vec3_new(float x, float y, float z) {
     vec3_t result = { x, y, z };
     return result;
 }
+
+vec3_t vec3_clone(vec3_t* v) {
+    vec3_t result = { v->x, v->y, v->z };
+    return result;
+}
