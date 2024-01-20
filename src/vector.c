@@ -149,3 +149,8 @@ vec2_t vec2_from_vec4(vec4_t v) {
     vec2_t result = {v.x, v.y};
     return result;
 }
+
+vec3_t vec3_new(float x, float y, float z) {
+    vec3_t result = { x, y, z };
+    return result;
+}

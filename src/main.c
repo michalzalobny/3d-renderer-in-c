@@ -55,6 +55,11 @@ void setup(void){
   float aspect = (float)window_width / (float)window_height;
   float znear = 0.1;
   float zfar = 10.0;
+
+
+  // Initialize frustum planes with a point and a normal
+  init_frustum_planes(fov, znear, zfar);
+
   proj_matrix = mat4_make_projection(fov, aspect, znear, zfar);
 
   // Load the cube values in the mesh data structure
