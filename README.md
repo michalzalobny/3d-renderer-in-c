@@ -6,6 +6,8 @@ No GPU, or OpenGL. Just a C compiler and linear algebra.
 
 In this project, I'm using the Left-Handed coordinate system. Z-values increase when going into the screen.
 
+Check out also the [WebGL 3D engine](https://github.com/michalzalobny/webgl-viewer), that I created after finishing this project.
+
 ## Content
 
 - Pure C and SDL
