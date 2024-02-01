@@ -69,3 +69,12 @@ When importing your own mesh, make sure to export it as a Wavefront (.obj) file.
 - Normals
 - UV Coordinates
 - Triangulate Faces (so that the mesh is made of triangles, not quads)
+
+# Images from the project
+
+![1](docs/1.png)
+![2](docs/2.png)
+![3](docs/3.png)
+![4](docs/4.png)
+![5](docs/5.png)
+![6](docs/6.png)
