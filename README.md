@@ -1,6 +1,6 @@
 # 3D Renderer in C
 
-Building a 3D graphics renderer from scratch using the C programming language.
+Building a 3D graphics renderer from scratch using the C programming language. Based on [Gustavo Pezzi's course](https://pikuma.com/courses/learn-3d-computer-graphics-programming)
 
 No GPU, or OpenGL. Just a C compiler and linear algebra.
 
@@ -19,8 +19,6 @@ Check out also the [WebGL 3D engine](https://github.com/michalzalobny/webgl-view
 - Handling textures and texture mapping
 - Camera and view transformations
 - Displaying complex 3D models (imported from external programs like Blender)
-
-Based on Gustavo Pezzi's course
 
 # Run commands
 
